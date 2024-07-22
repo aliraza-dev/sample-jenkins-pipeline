@@ -2,7 +2,9 @@ pipeline {
     agent any
     stages {
         stage('Build Image') {
-            sh echo "Building some image"
+            steps {
+                sh echo "Building some image"
+            }
         }
     }
 }
