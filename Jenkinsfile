@@ -1,16 +1,23 @@
 pipeline {
     agent any
     stages {
-        stage('Build Image') {
+        stage('fetching code') {
             steps {
-                sh 'echo "Building some image"'
+                git branch:main, url:'git@github.com:aliraza-dev/sample-jenkins-pipeline.git'
             }
         }
+        
+        stage('Build Code') {
+            steps {
+                sh 'npm install && npm run build'
+            }
 
-        stage('Reminder') {
-            steps {
-                sh 'echo "so to run the commands, we have to use quotes"'
+            post {
+                success {
+                    archiveArtifacts artifacts: 'dist/*'
+                }
             }
         }
+    
     }
 }
