@@ -5,6 +5,15 @@ pipeline {
         nodejs "NODEJS22"
     }
 
+    // Setting environment to push code to ECR. 
+    environment {
+        registryCredentials = 'ecr:us-east-1:awscreds'
+        appRegistry = '437150665988.dkr.ecr.us-east-1.amazonaws.com/practice'
+        feRegistry = 'https://437150665988.dkr.ecr.us-east-1.amazonaws.com'
+        // cluster="cluster"
+        // service="cluster"
+    }
+
     stages {
 
         stage ('Check Tools ') {
@@ -32,6 +41,24 @@ pipeline {
                 }
             }
         }
-    
+
+        stage ('Build Docker image') {
+            steps {
+                script {
+                    dockerImage = docker.build(appRegistry + ":$BUILD_NUMBER", "./Dockerfile")
+                }
+            }
+        }
+
+        stage ('Push image to ECR') {
+            steps {
+                script {
+                    docker.withRegistry(feRegistry, registryCredentials) {
+                        dockerImage.push('$BUILD_NUMBER')
+                        dockerImage.push('latest')
+                    }
+                }
+            }
+        }
     }
 }
