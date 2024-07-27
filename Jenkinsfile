@@ -1,6 +1,18 @@
 pipeline {
     agent any
+
+    tools {
+        nodejs "NODEJS22"
+    }
+
     stages {
+
+        stage ('Check Tools ') {
+            steps {
+                sh 'npm config ls'
+            }
+        }
+
         stage('fetching code') {
             steps {
                 git branch:'main', 
