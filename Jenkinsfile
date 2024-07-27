@@ -3,7 +3,9 @@ pipeline {
     stages {
         stage('fetching code') {
             steps {
-                git branch:'main', url:'git@github.com:aliraza-dev/sample-jenkins-pipeline.git'
+                git branch:'main', 
+                    url:'git@github.com:aliraza-dev/sample-jenkins-pipeline.git',
+                    credentialsId: 'sshalirazadev'
             }
         }
         
