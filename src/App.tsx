@@ -24,7 +24,7 @@ function App() {
         <p>A few updates for ecr to create a new version</p>
       </div>
       <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
+        Deploying to the ECS service using task definition
       </p>
     </>
   );

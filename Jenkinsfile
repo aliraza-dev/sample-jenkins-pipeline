@@ -11,8 +11,8 @@ pipeline {
         APP_REGISTRY = '437150665988.dkr.ecr.us-east-1.amazonaws.com/practice'
         FE_REGISTRY = 'https://437150665988.dkr.ecr.us-east-1.amazonaws.com'
         ARTVERSION = "${env.BUILD_ID}"
-        // cluster="cluster"
-        // service="cluster"
+        cluster="sample-app"
+        service="sample-vite-svc"
     }
 
     stages {
@@ -58,6 +58,20 @@ pipeline {
                         dockerImage.push(ARTVERSION)
                         dockerImage.push('latest')
                     }
+                }
+            }
+        }
+
+        stage('Deploy to ECS') {
+            steps {
+                withAWS(credentials: 'awscreds', region: 'us-east-1') {
+                    sh 'aws ecs update-service --cluster ${cluster} --service ${service} --force-new-deployment'
+                }
+            }
+
+            post {
+                success {
+                    sh 'echo "Image build and deployed successfully"'
                 }
             }
         }
