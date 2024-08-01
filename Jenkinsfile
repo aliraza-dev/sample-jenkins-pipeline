@@ -7,9 +7,10 @@ pipeline {
 
     // Setting environment to push code to ECR. 
     environment {
-        registryCredentials = 'ecr:us-east-1:awscreds'
-        appRegistry = '437150665988.dkr.ecr.us-east-1.amazonaws.com/practice'
-        feRegistry = 'https://437150665988.dkr.ecr.us-east-1.amazonaws.com'
+        REGISTRY_CREDENTIALS = 'ecr:us-east-1:awscreds'
+        APP_REGISTRY = '437150665988.dkr.ecr.us-east-1.amazonaws.com/practice'
+        FE_REGISTRY = 'https://437150665988.dkr.ecr.us-east-1.amazonaws.com'
+        ARTVERSION = "${env.BUILD_ID}"
         // cluster="cluster"
         // service="cluster"
     }
@@ -45,7 +46,7 @@ pipeline {
         stage ('Build Docker image') {
             steps {
                 script {
-                    dockerImage = docker.build(appRegistry + ":$BUILD_ID", ".")
+                    dockerImage = docker.build(APP_REGISTRY + ":" + ARTVERSION, ".")
                 }
             }
         }
@@ -53,8 +54,8 @@ pipeline {
         stage ('Push image to ECR') {
             steps {
                 script {
-                    docker.withRegistry(feRegistry, registryCredentials) {
-                        dockerImage.push('$BUILD_ID')
+                    docker.withRegistry(FE_REGISTRY, REGISTRY_CREDENTIALS) {
+                        dockerImage.push(ARTVERSION)
                         dockerImage.push('latest')
                     }
                 }
